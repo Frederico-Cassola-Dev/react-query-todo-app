@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useQuery, useMutation } from "@tanstack/react-query"
 import './App.css'
 
+
+const postsData = [
+  { id: 1, title: "first post" },
+  { id: 2, title: "second post" }
+];
+
 function App() {
-  const [count, setCount] = useState(0)
+
+  const postsQuery = useQuery({
+    queryKey: ["posts"],
+    queryFn: () =>
+      wait(2000).then(() => [...postsData])
+    ,
+  });
+
+  if (postsQuery.isLoading) return (
+    <h1>
+      Is Loading...
+    </h1>);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>React-Query Learning</h1>
+      {postsQuery.data && postsQuery.data.map((post) =>
+      (<div key={post.id}>
+        {post.title}
+      </div>)
+      )}
     </>
   )
 }
+
+function wait(duration) {
+  return new Promise(resolve => setTimeout(resolve, duration))
+};
 
 export default App
