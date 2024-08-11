@@ -16,17 +16,14 @@ function App() {
 
   const postsQuery = useQuery({
     queryKey: ["tasks"],
-    queryFn: async () => {
-      return await getPostsData();
+    queryFn: () => {
+      return getPostsData();
     }
   });
 
   const newPostMutation = useMutation({
-    mutationFn: async title => {
-      return wait(1000).then(() => {
-        postsData.push({ id: crypto.randomUUID(), title });
-        titleRef.current.value = "";
-      })
+    mutationFn: async () => {
+      return await addNewPostsData(titleRef.current.value);
     },
     onSuccess: () => {
       // Make a refetch on postsQuery if success on the addNewPost
@@ -92,5 +89,18 @@ const getPostsData = async () => {
   //   })
   //   .catch(error => console.error(error));
 }
-
+const addNewPostsData = async (inputDataNewPost) => {
+  const response = await fetch("http://127.0.0.1:5000/tasks", {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: inputDataNewPost,
+      is_urgent: 0,
+      importance_id: "1",
+    })
+  })
+  return await response.json();
+}
 export default App
