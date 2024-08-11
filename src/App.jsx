@@ -8,15 +8,17 @@ const postsData = [
   { id: 2, title: "second post" }
 ];
 
+
 function App() {
   const titleRef = useRef();
 
   const queryClient = useQueryClient();
 
   const postsQuery = useQuery({
-    queryKey: ["posts"],
-    queryFn: () =>
-      wait(1000).then(() => [...postsData])
+    queryKey: ["tasks"],
+    queryFn: async () => {
+      return await getPostsData();
+    }
   });
 
   const newPostMutation = useMutation({
@@ -28,7 +30,7 @@ function App() {
     },
     onSuccess: () => {
       // Make a refetch on postsQuery if success on the addNewPost
-      queryClient.invalidateQueries(["posts"])
+      queryClient.invalidateQueries(["tasks"]);
     },
   });
 
@@ -37,7 +39,7 @@ function App() {
       return wait(1000).then(() => postsData.pop())
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["posts"])
+      queryClient.invalidateQueries(["tasks"]);
     }
   })
 
@@ -47,7 +49,6 @@ function App() {
     <>
       <h1>React-Query Learning</h1>
       <input type="text" name="" ref={titleRef} />
-      {/* <input type="text" name="" value={newTitle} onChange={(e) => setNewTile(e.target.value)} /> */}
       <button
         disabled={newPostMutation.isPending}
         onClick={
@@ -76,5 +77,20 @@ function App() {
 function wait(duration) {
   return new Promise(resolve => setTimeout(resolve, duration))
 };
+
+const getPostsData = async () => {
+  const response = await fetch("http://localhost:5000/tasks")
+  return await response.json();
+
+  // fetch("http://localhost:5000/tasks").then(
+  //   (response) => {
+  //     return response.json()
+  //   })
+  //   .then(data => {
+  //     console.log("Hello from getPostData", data[0].title);
+  //     return data
+  //   })
+  //   .catch(error => console.error(error));
+}
 
 export default App
