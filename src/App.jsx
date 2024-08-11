@@ -48,13 +48,27 @@ function App() {
       <h1>React-Query Learning</h1>
       <input type="text" name="" ref={titleRef} />
       {/* <input type="text" name="" value={newTitle} onChange={(e) => setNewTile(e.target.value)} /> */}
-      <button disabled={newPostMutation.isPending} onClick={() => newPostMutation.mutate(titleRef.current.value)}>Add new post</button>
+      <button
+        disabled={newPostMutation.isPending}
+        onClick={
+          () => {
+            newPostMutation.mutate(titleRef.current.value)
+          }
+        }
+      >
+        Add new post
+      </button>
       {postsQuery.data && postsQuery.data.map((post) =>
       (<div key={post.id}>
         {post.title}
       </div>)
       )}
-      <button disabled={deletePostMutation.isPending} onClick={() => deletePostMutation.mutate()}>Delete last post</button>
+      <button
+        disabled={deletePostMutation.isPending}
+        onClick={() => deletePostMutation.mutate()}
+      >
+        Delete last post
+      </button>
     </>
   )
 }
