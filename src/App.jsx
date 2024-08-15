@@ -28,7 +28,8 @@ function App() {
 
   const deleteTask = useDeleteTask();
 
-  if (postsQuery.isLoading) return <h1>Is Loading...</h1>;
+  //TODO: In case slow net manage the loading message
+  // if (newPostMutation.isPending || deleteTask.isPending) return <h1>Is Loading...</h1>;
 
   return (
     <>
