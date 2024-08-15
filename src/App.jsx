@@ -1,7 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query"
 import { useRef } from "react";
 import useDeleteTask from "./hooks/useDeleteTask";
-import { getPostsData, addNewPostsData, deletePostData } from "./services/allFetch"
+import { getPostsData, addNewPostsData } from "./services/allFetch"
 
 import './App.css'
 
@@ -13,7 +13,10 @@ function App() {
     queryKey: ["tasks"],
     queryFn: () => {
       return getPostsData();
-    }
+    },
+    // INFO: Need to learn about placeholderData from useQuery()
+    // INFO: youtube video in play list React-Query;
+    placeholderData: keepPreviousData
   });
 
   const newPostMutation = useMutation({
@@ -29,6 +32,8 @@ function App() {
   const deleteTask = useDeleteTask();
 
   //TODO: In case slow net manage the loading message
+
+  //TODO: pass into the return app.jsx 
   // if (newPostMutation.isPending || deleteTask.isPending) return <h1>Is Loading...</h1>;
 
   return (
