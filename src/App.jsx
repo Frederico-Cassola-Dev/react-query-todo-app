@@ -20,10 +20,10 @@ function App() {
       return getPostsData();
     }
   });
-
+  console.log("length of postsQueryData", postsQuery.data?.lenght)
   const newPostMutation = useMutation({
-    mutationFn: async () => {
-      return await addNewPostsData(titleRef.current.value);
+    mutationFn: () => {
+      return addNewPostsData(titleRef.current.value);
     },
     onSuccess: () => {
       // Make a refetch on postsQuery if success on the addNewPost
@@ -32,8 +32,8 @@ function App() {
   });
 
   const deletePostMutation = useMutation({
-    mutationFn: async () => {
-      return wait(1000).then(() => postsData.pop())
+    mutationFn: async (postId) => {
+      return deletePostData(postId)
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["tasks"]);
@@ -63,7 +63,9 @@ function App() {
       )}
       <button
         disabled={deletePostMutation.isPending}
-        onClick={() => deletePostMutation.mutate()}
+        onClick={() => deletePostMutation.mutate(postsQuery.data[postsQuery.data.length - 1].id)
+        }
+
       >
         Delete last post
       </button>
@@ -77,17 +79,7 @@ function wait(duration) {
 
 const getPostsData = async () => {
   const response = await fetch("http://localhost:5000/tasks")
-  return await response.json();
-
-  // fetch("http://localhost:5000/tasks").then(
-  //   (response) => {
-  //     return response.json()
-  //   })
-  //   .then(data => {
-  //     console.log("Hello from getPostData", data[0].title);
-  //     return data
-  //   })
-  //   .catch(error => console.error(error));
+  return response.json();
 }
 const addNewPostsData = async (inputDataNewPost) => {
   const response = await fetch("http://127.0.0.1:5000/tasks", {
@@ -101,6 +93,15 @@ const addNewPostsData = async (inputDataNewPost) => {
       importance_id: "1",
     })
   })
-  return await response.json();
+  return response;
+}
+
+const deletePostData = async (postId) => {
+  console.log("hello from deletePostData");
+  console.log("postId", postId);
+  const response = await fetch(`http://127.0.0.1:5000/tasks/${postId}`, {
+    method: "DELETE"
+  });
+  return response
 }
 export default App
