@@ -2,13 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import './App.css'
 import { useRef } from "react";
 
-
-const postsData = [
-  { id: 1, title: "first post" },
-  { id: 2, title: "second post" }
-];
-
-
 function App() {
   const titleRef = useRef();
 
@@ -20,7 +13,7 @@ function App() {
       return getPostsData();
     }
   });
-  console.log("length of postsQueryData", postsQuery.data?.lenght)
+
   const newPostMutation = useMutation({
     mutationFn: () => {
       return addNewPostsData(titleRef.current.value);
@@ -32,10 +25,11 @@ function App() {
   });
 
   const deletePostMutation = useMutation({
-    mutationFn: async (postId) => {
+    mutationFn: (postId) => {
       return deletePostData(postId)
     },
     onSuccess: () => {
+      // Make a refetch on postsQuery if success on the addNewPost
       queryClient.invalidateQueries(["tasks"]);
     }
   })
@@ -56,11 +50,6 @@ function App() {
       >
         Add new post
       </button>
-      {postsQuery.data && postsQuery.data.map((post) =>
-      (<div key={post.id}>
-        {post.title}
-      </div>)
-      )}
       <button
         disabled={deletePostMutation.isPending}
         onClick={() => deletePostMutation.mutate(postsQuery.data[postsQuery.data.length - 1].id)
@@ -69,39 +58,68 @@ function App() {
       >
         Delete last post
       </button>
+      {postsQuery.data && postsQuery.data.map((post) =>
+      (<div key={post.id}>
+        {post.title}
+      </div>)
+      )}
     </>
   )
 }
 
-function wait(duration) {
-  return new Promise(resolve => setTimeout(resolve, duration))
-};
+
+// function wait(duration) {
+//   return new Promise(resolve => setTimeout(resolve, duration))
+// };
 
 const getPostsData = async () => {
-  const response = await fetch("http://localhost:5000/tasks")
-  return response.json();
+  try {
+    const response = await fetch("http://localhost:5000/tasks")
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.log(error)
+  }
 }
 const addNewPostsData = async (inputDataNewPost) => {
-  const response = await fetch("http://127.0.0.1:5000/tasks", {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      title: inputDataNewPost,
-      is_urgent: 0,
-      importance_id: "1",
+  try {
+    const response = await fetch("http://127.0.0.1:5000/tasks", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: inputDataNewPost,
+        is_urgent: 0,
+        importance_id: "1",
+      })
     })
-  })
-  return response;
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+
 }
 
 const deletePostData = async (postId) => {
-  console.log("hello from deletePostData");
-  console.log("postId", postId);
-  const response = await fetch(`http://127.0.0.1:5000/tasks/${postId}`, {
-    method: "DELETE"
-  });
-  return response
+  try {
+    const response = await fetch(`http://127.0.0.1:5000/tasks/${postId}`, {
+      method: "DELETE"
+    });
+
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    return response
+  } catch (error) {
+    console.log(error);
+  }
 }
+
 export default App
