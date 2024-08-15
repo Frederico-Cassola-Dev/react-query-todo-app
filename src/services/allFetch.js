@@ -7,7 +7,7 @@ export const getPostsData = async () => {
     const response = await fetch("http://localhost:5000/tasks")
 
     if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+      throw new Error(`Response status: ${response.status} \n Status text: ${response.statusText} \n Url: ${response.url}`);
     }
 
     return response.json();
