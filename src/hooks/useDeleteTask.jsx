@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deletePostData } from "../services/allFetch";
+import { deleteTaskData } from "../services/allFetch";
 
 const useDeleteTask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ['deleteTask'],
-    mutationFn: async (taskId) => await deletePostData(taskId),
+    mutationFn: async (taskId) => await deleteTaskData(taskId),
     onSuccess: () => console.log("Delete Task Query Succefull"),
     onSettled: async (_, error) => {
       if (error) {
