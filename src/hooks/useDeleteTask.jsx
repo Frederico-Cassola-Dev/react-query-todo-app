@@ -7,19 +7,15 @@ const useDeleteTask = () => {
   return useMutation({
     mutationKey: ['deleteTask'],
     mutationFn: async (taskId) => await deleteTaskData(taskId),
-    onSuccess: () => console.log("Delete Task Query Succefull"),
-    onSettled: async (_, error) => {
-      if (error) {
-        console.log(error)
-      } else {
+    onSuccess: async () => {
+      console.log("Delete Task Query Succefull"),
         await queryClient.invalidateQueries(["tasks"]);
-      }
     },
-    onError: (error) => console.log('Delete task error:', error.json())
+    onError: (error) => {
+      return console.error(JSON.parse(error.message))
+    }
   });
 };
 
 export default useDeleteTask;
-
-
 

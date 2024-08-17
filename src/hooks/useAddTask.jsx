@@ -7,15 +7,13 @@ const useAddTask = () => {
   return useMutation({
     mutationKey: ["addTask"],
     mutationFn: async (inputDataTask) => addTaskData(inputDataTask),
-    onSuccess: () => console.log("Added task succefully"),
-    onSettled: async (_, error) => {
-      if (error) {
-        console.log(error)
-      } else {
-        await queryClient.invalidateQueries(["tasks"]);
-      }
+    onSuccess: async () => {
+      console.log("Added task succefully")
+      await queryClient.invalidateQueries(["tasks"]);
     },
-    onError: (error) => console.log("Add task error:", error.json())
+    onError: (error) => {
+      return console.error(JSON.parse(error.message))
+    }
   })
 }
 

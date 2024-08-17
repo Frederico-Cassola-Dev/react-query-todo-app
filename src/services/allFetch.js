@@ -4,10 +4,16 @@ export const wait = (duration) => {
 
 export const getTaskData = async () => {
   try {
-    const response = await fetch("http://localhost:5000/tasks")
+    const response = await fetch("http://localhost:8000/api.php/tasks")
 
     if (!response.ok) {
-      throw new Error(`Response status: ${response.status} \n Status text: ${response.statusText} \n Url: ${response.url}`);
+      const data = await response.json();
+      const error = {
+        status: 'error',
+        message: data.error,
+        code: response.status,
+      };
+      throw new Error(JSON.stringify(error));
     }
 
     return response.json();
@@ -19,7 +25,7 @@ export const getTaskData = async () => {
 
 export const addTaskData = async (inputDataAddTask) => {
   try {
-    const response = await fetch("http://127.0.0.1:5000/tasks", {
+    const response = await fetch("http://localhost:8000/api.php/tasks", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -32,30 +38,47 @@ export const addTaskData = async (inputDataAddTask) => {
     })
 
     if (!response.ok) {
-      throw new Error(`Response status: ${response.status} \n Status text: ${response.statusText} \n Url: ${response.url}`);
+      const data = await response.json();
+      const error = {
+        status: 'error',
+        message: data.message,
+        code: response.status,
+      };
+      throw new Error(JSON.stringify(error));
     };
 
-    return response;
+    const data = await response.json();
+
+    // INFO: This data return is taken from the useMutation when the fetch is successful
+    return data;
 
   } catch (error) {
-
-    console.log(error);
+    throw error;
   }
 }
 
 export const deleteTaskData = async (taskId) => {
   try {
-    const response = await fetch(`http://127.0.0.1:5000/tasks/${taskId}`, {
+    const response = await fetch(`http://localhost:8000/api.php/tasks/${taskId}`, {
       method: "DELETE"
     });
 
     if (!response.ok) {
-      throw new Error(`Response status: ${response.status} \n Status text: ${response.statusText} \n Url: ${response.url}`);
-    };
+      const data = await response.json();
+      const error = {
+        status: 'error',
+        message: data.error,
+        code: response.status,
+      };
+      throw new Error(JSON.stringify(error));
+    }
 
-    return response
+    const data = await response.json();
 
+    // INFO: The data return is taken from the useMutation after the fetch is successful
+    return data;
   } catch (error) {
-    console.error("deleteTaskData()", error);
+    // Re-throw the error for the useDeleteTask to handle
+    throw error;
   }
-}
+};
