@@ -9,7 +9,7 @@ const useGetAllTasks = () => {
     },
     // NOTE: Need to learn about placeholderData from useQuery()
     // NOTE: youtube video in play list React-Query;
-    placeholderData: keepPreviousData
+    // placeholderData: keepPreviousData
   })
 }
 

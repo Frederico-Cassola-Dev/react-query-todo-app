@@ -2,9 +2,9 @@ export const wait = (duration) => {
   return new Promise(resolve => setTimeout(resolve, duration))
 };
 
-export const getTaskData = async () => {
+export const getTaskData = async (pageNumber) => {
   try {
-    const response = await fetch("http://localhost:8000/api.php/tasks")
+    const response = await fetch("http://localhost:8000/api.php/tasks");
 
     if (!response.ok) {
       const data = await response.json();
@@ -34,6 +34,7 @@ export const addTaskData = async (inputDataAddTask) => {
         title: inputDataAddTask,
         is_urgent: 0,
         importance_id: "1",
+        action: "addTask"
       })
     })
 
@@ -72,6 +73,7 @@ export const deleteTaskData = async (taskId) => {
       };
       throw new Error(JSON.stringify(error));
     }
+    console.log(response)
 
     const data = await response.json();
 
@@ -81,4 +83,36 @@ export const deleteTaskData = async (taskId) => {
     // Re-throw the error for the useDeleteTask to handle
     throw error;
   }
+}
+
+export const getPageData = async (pageNumber) => {
+  try {
+    const response = await fetch(`http://localhost:8000/api.php/tasks`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        pageNumber: pageNumber,
+        action: "getPage"
+      })
+    })
+
+    if (!response.ok) {
+      const error = {
+        status: "error",
+        message: "Change Page Error",
+        code: response.status,
+      };
+      throw new Error(JSON.stringify(error));
+    }
+
+    const data = await response.json();
+    // INFO: The data return is taken from the useMutation after the fetch is successful
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
+
