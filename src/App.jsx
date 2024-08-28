@@ -17,7 +17,7 @@ function App() {
       <h1>React-Query Learning</h1>
       <input type="text" name="" ref={titleRef} />
       <button
-        disabled={addTask.isPending}
+        // disabled={addTask.isPending}
         onClick={
           () => {
             addTask.mutate(titleRef.current.value)
@@ -27,19 +27,19 @@ function App() {
         Add new post
       </button>
       <button
-        disabled={deleteTask.isPending}
+        // disabled={deleteTask.isPending}
         onClick={() => deleteTask.mutate(getAllTasks.data[getAllTasks.data.length - 1]?.id)
         }
       >
         Delete last post
       </button>
-      {addTask.isPending || deleteTask.isPending ?
-        (<h1>Is Loading...</h1>) :
-        getAllTasks.data && getAllTasks.data.map((post) =>
-        (<div key={post.id}>
-          {post.title}
-        </div>)
-        )
+      {/* {addTask.isPending || deleteTask.isPending ? */}
+      {/* (<h1>Is Loading...</h1>) : */}
+      {getAllTasks.data && getAllTasks.data.map((post) =>
+      (<div key={post.id}>
+        {post.title}
+      </div>)
+      )
       }
     </>
   )
