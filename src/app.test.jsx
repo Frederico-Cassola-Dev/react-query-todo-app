@@ -19,7 +19,7 @@ describe('App component', () => {
   it('renders the App component with initial tasks', () => {
     useGetAllTasks.mockReturnValue({
       data: [{ id: 1, title: 'Test Task 1' }],
-      // isPending: false,
+      isLoading: false,
     });
 
     render(<App />);
